@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
+
+@layer base {
+    body {
+        @apply bg-[#040714] text-[#F9F9F9] font-body scrollbar-hide;
+    }
+}
+
+@layer components {
+    .header-link {
+        @apply flex items-center space-x-2 cursor-pointer;
+    }
+
+    .span {
+        @apply relative uppercase text-sm font-medium before:bg-[#F9F9F9] before:rounded-bl before:-bottom-1.5 before:h-0.5 before:inset-x-0 before:absolute before:transform before:origin-left before:scale-x-0 before:transition-all before:duration-200 group-hover:before:scale-x-100;
+    }
+
+    .form__group {
+        @apply relative w-3/4;
+    }
+
+    .form__field {
+        @apply font-body text-xl w-full border-0 border-b-2 border-gray-400 outline-none font-light text-white pt-2 pb-2 bg-transparent;
+    }
+
+    .form__field:focus {
+        @apply font-semibold text-xl border-0 border-b-2 border-green-400 transition-all duration-200;
+    }
+
+    .form__field:focus::placeholder {
+        @apply text-transparent transition-all duration-200;
+    }
+}
