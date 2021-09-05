@@ -1,31 +1,38 @@
-import axios from 'axios'
-import { useRef } from 'react'
+import Link from 'next/link'
+import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
+import useHttp from '../../hooks/use-http'
 
 const LogIn = () => {
     const emailRef = useRef()
     const passwordRef = useRef()
     const router = useRouter()
+    const { isLoading, error, sendRequest } = useHttp()
 
-    const onFormSubmit = async (e) => {
+    useEffect(() => {
+        emailRef.current.value = localStorage.getItem(process.env.NEXT_PUBLIC_LOGIN_EMAIL) || ''
+    }, [])
+
+    const onFormSubmit = (e) => {
         e.preventDefault()
-        try {
-            const email = emailRef.current.value
-            const password = passwordRef.current.value
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}auth`, { email, password })
-            loginUser(data.accessToken, data.refreshToken)
-        } catch ({ response }) {
-            alert(response.data.message);
-        }
+        const email = emailRef.current.value
+        const password = passwordRef.current.value
+        sendRequest({ method: 'POST', url: 'auth', body: { email, password } }, ({ data }) => {
+            storeEmail()
+            storeTokens(data.accessToken, data.refreshToken)
+            router.push('/')
+        })
     }
-    const loginUser = (accessToken, refreshToken) => {
-        localStorage.setItem('accessToken', accessToken)
-        localStorage.setItem('refreshToken', refreshToken)
-        router.push('/')
+    const storeTokens = (accessToken, refreshToken) => {
+        localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN, accessToken)
+        localStorage.setItem(process.env.NEXT_PUBLIC_REFRESH_TOKEN, refreshToken)
+    }
+    const storeEmail = () => {
+        localStorage.setItem(process.env.NEXT_PUBLIC_LOGIN_EMAIL, emailRef.current.value)
     }
 
     return (
-        <form className='flex flex-col w-1/4 mx-auto justify-center space-y-2' onSubmit={onFormSubmit}>
+        <form className='flex flex-col w-3/4 mx-auto justify-center space-y-2 md:w-2/4 xl:w-1/4' onSubmit={onFormSubmit}>
             <img src='/images/tweeter.svg' alt='Tweeter logo' />
             <div className='form__group self-center'>
                 <label htmlFor='email' className='hidden'>Email</label>
@@ -37,6 +44,16 @@ const LogIn = () => {
             </div>
             <div className='form__group self-center pt-2'>
                 <input type='submit' className='w-full px-2 py-2 bg-blue-400 text-white text-xl font-semibold rounded-full hover:cursor-pointer hover:bg-blue-500 transition-all duration-200' value='Log in' />
+            </div>
+            <div className='form__group self-center pt-2'>
+                <span>
+                    Don't have an account?
+                    <Link href='/signin'>
+                        <a className='text-blue-400 hover:underline hover:text-blue-500 lg:pl-1'>
+                            Sign in
+                        </a>
+                    </Link>
+                </span>
             </div>
         </form>
     )
