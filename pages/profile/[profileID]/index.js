@@ -1,7 +1,10 @@
 import jwtDecode from 'jwt-decode'
-import { UserAddIcon } from '@heroicons/react/solid'
+import { UserAddIcon, XIcon } from '@heroicons/react/solid'
 import { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import Link from 'next/link'
 import useHttpToken from '../../../hooks/use-http-token'
+import ReactModal from 'react-modal'
 
 const BASE_PROFILE = {
     _id: '',
@@ -14,11 +17,16 @@ const BASE_PROFILE = {
     state: true
 }
 
+ReactModal.defaultStyles.overlay.zIndex = 1000
+ReactModal.defaultStyles.overlay.backgroundColor = 'hls(0, 0%, 100%)'
+
 const Profile = ({ profileID }) => {
     const [myProfile, setMyProfile] = useState(BASE_PROFILE)
     const [profile, setProfile] = useState(BASE_PROFILE)
     const [profileFollowers, setProfileFollowers] = useState([])
     const [profileFollowing, setProfileFollowing] = useState([])
+    const [followingModalIsOpen, setFollowingModalIsOpen] = useState(false)
+    const [followersModalIsOpen, setFollowersModalIsOpen] = useState(false)
     const { isLoading, error, sendRequest } = useHttpToken()
 
     useEffect(() => {
@@ -46,61 +54,145 @@ const Profile = ({ profileID }) => {
         })
     }, [profileID, setProfileFollowers, setProfileFollowing])
 
-    const followProfile = () => {
-        sendRequest({ method: 'POST', url: 'profile-follow/new', body: { followingProfileID: profile._id, followerProfileID: myProfile._id, state: true } }, ({ data }) => {
-            setProfileFollowers((prevState) => {
-                return [...prevState, data.profileFollow]
-            })
+    const followProfile = (followingID) => {
+        sendRequest({ method: 'POST', url: 'profile-follow/new', body: { followingProfileID: followingID, followerProfileID: myProfile._id, state: true } }, ({ data }) => {
+            if (followingID === profile._id) {
+                setProfileFollowers((prevState) => {
+                    return [...prevState, data.profileFollow]
+                })
+            }
             alert(data.message)
         })
     }
 
     return (
-        <div className='flex flex-col'>
-            <div className='max-h-[7.5rem] sm:max-h-[10rem] md:max-h-[15rem] lg:max-h-[22.5rem]'>
-                <img src='/images/default_banner.png' className='max-h-full' width='100%' />
-            </div>
-            <div className='absolute left-[50%] top-[2.5rem] h-[6rem] w-[6rem] z-[1000] sm:left-[12%] sm:top-[5rem] sm:h-[6rem] sm:w-[6rem] md:left-[12%] md:top-[9rem] md:h-[7.5rem] md:w-[7.5rem] lg:left-[12%] lg:top-[14rem] lg:h-[10.5rem] lg:w-[10.5rem]'>
-                <img src='/images/default_profile_normal.png' className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
-            </div>
-            <div className='absolute flex py-2 bg-white rounded-lg w-[85%] left-[10%] top-[6rem] sm:left-[9%] sm:top-[8rem] md:left-[10%] md:top-[13rem] lg:left-[10%] lg:top-[19rem]'>
-                <div className='flex flex-col w-full space-y-2 items-center mt-12 sm:items-start sm:mt-0 sm:mr-10 sm:py-4 sm:ml-32 md:ml-40 lg:ml-52'>
-                    <div className='flex items-center justify-center w-full m:justify-start'>
-                        <span className='capitalize font-bold text-lg '>
-                            {profile.fullName}
-                        </span>
-                        <span className='hidden ml-6 sm:block'>
-                            <b>{profileFollowing.length}</b> following
-                        </span>
-                        <span className='hidden ml-6 sm:block'>
-                            <b>{profileFollowers.length}</b> followers
-                        </span>
-                        <button className='hidden ml-auto space-x-1 items-center px-8 py-1 bg-blue-400 text-white rounded-sm hover:cursor-pointer hover:bg-blue-500 transition-all duration-200 sm:flex' onClick={followProfile}>
-                            <UserAddIcon className='h-5' />
-                            <span>Follow</span>
-                        </button>
-                    </div>
-                    <div className='flex justify-evenly px-10 w-full sm:hidden'>
-                        <span>
-                            <b>{profileFollowing.length}</b> following
-                        </span>
-                        <span>
-                            <b>{profileFollowers.length}</b> followers
-                        </span>
-                    </div>
-                    <div className='flex px-10 text-center text-gray-500 sm:text-left sm:pl-0'>
-                        Nostrud nisi Lorem non voluptate reprehenderit ex ullamco consequat cillum Lorem fugiat aliqua ut.
-                    </div>
-                    <div className='flex sm:hidden'>
-                        <button className='flex space-x-1 items-center px-10 py-2 bg-blue-400 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 transition-all duration-200'
-                            onClick={followProfile}>
-                            <UserAddIcon className='h-5' />
-                            <span>Follow</span>
-                        </button>
+        <>
+            <ReactModal
+                className='absolute flex flex-col items-center w-3/4 p-4 max-h-[50%] overflow-y-auto bg-white rounded-lg'
+                isOpen={followingModalIsOpen}
+                contentLabel='Modal for following profiles'
+                ariaHideApp={false}
+            >
+                <div className='flex w-full mb-2'>
+                    <span className='font-semibold'>
+                        {profile.fullName} is following
+                    </span>
+                    <span className='ml-auto cursor-pointer' onClick={() => setFollowingModalIsOpen(false)}>
+                        <XIcon className='h-6' />
+                    </span>
+                </div>
+                <div className='flex flex-col w-full'>
+                    {profileFollowing.map(({ followingProfileID }) => (
+                        <div key={uuidv4()} className='flex mt-2'>
+                            <div className='self-start max-h-[7.5rem] sm:max-h-[10rem] md:max-h-[15rem] lg:max-h-[22.5rem]'>
+                                <img src='/images/default_profile_normal.png' className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
+                            </div>
+                            <div className='flex flex-col ml-4 justify-between'>
+                                <Link href={`/profile/${followingProfileID._id}`}>
+                                    <a className='font-semibold'>
+                                        {followingProfileID.fullName}
+                                    </a>
+                                </Link>
+                                <span className='text-xs'>
+                                    x followers
+                                </span>
+                            </div>
+                            <div className='ml-auto'>
+                                <button className='flex ml-auto space-x-1 items-center px-4 py-[0.125rem] bg-blue-400 text-white text-xs rounded-sm hover:cursor-pointer hover:bg-blue-500 transition-all duration-200' onClick={followProfile.bind(null, followingProfileID._id)}>
+                                    <UserAddIcon className='h-5' />
+                                    <span>Follow</span>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </ReactModal>
+            <ReactModal
+                className='absolute flex flex-col items-center w-3/4 p-4 max-h-[50%] overflow-y-auto bg-white rounded-lg'
+                isOpen={followersModalIsOpen}
+                contentLabel='Modal for followers profiles'
+                ariaHideApp={false}
+            >
+                <div className='flex w-full mb-2'>
+                    <span className='font-semibold'>
+                        {profile.fullName} followers
+                    </span>
+                    <span className='ml-auto cursor-pointer' onClick={() => setFollowersModalIsOpen(false)}>
+                        <XIcon className='h-6' />
+                    </span>
+                </div>
+                <div className='flex flex-col w-full'>
+                    {profileFollowers.map(({ followerProfileID }) => (
+                        <div key={uuidv4()} className='flex mt-2'>
+                            <div className='self-start max-h-[7.5rem] sm:max-h-[10rem] md:max-h-[15rem] lg:max-h-[22.5rem]'>
+                                <img src='/images/default_profile_normal.png' className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
+                            </div>
+                            <div className='flex flex-col ml-4 justify-between'>
+                                <Link href={`/profile/${followerProfileID._id}`}>
+                                    <a className='font-semibold'>
+                                        {followerProfileID.fullName}
+                                    </a>
+                                </Link>
+                                <span className='text-xs'>
+                                    x followers
+                                </span>
+                            </div>
+                            <div className='ml-auto'>
+                                <button className='flex ml-auto space-x-1 items-center px-4 py-[0.125rem] bg-blue-400 text-white text-xs rounded-sm hover:cursor-pointer hover:bg-blue-500 transition-all duration-200' onClick={followProfile.bind(null, followerProfileID._id)}>
+                                    <UserAddIcon className='h-5' />
+                                    <span>Follow</span>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </ReactModal>
+            <div className='flex flex-col'>
+                <div className='max-h-[7.5rem] sm:max-h-[10rem] md:max-h-[15rem] lg:max-h-[22.5rem]'>
+                    <img src='/images/default_banner.png' className='max-h-full' width='100%' />
+                </div>
+                <div className='absolute left-[50%] top-[2.5rem] h-[6rem] w-[6rem] z-10 sm:left-[12%] sm:top-[5rem] sm:h-[6rem] sm:w-[6rem] md:left-[12%] md:top-[9rem] md:h-[7.5rem] md:w-[7.5rem] lg:left-[12%] lg:top-[14rem] lg:h-[10.5rem] lg:w-[10.5rem]'>
+                    <img src='/images/default_profile_normal.png' className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
+                </div>
+                <div className='absolute flex py-2 bg-white rounded-lg w-[85%] left-[10%] top-[6rem] sm:left-[9%] sm:top-[8rem] md:left-[10%] md:top-[13rem] lg:left-[10%] lg:top-[19rem]'>
+                    <div className='flex flex-col w-full space-y-2 items-center mt-12 sm:items-start sm:mt-0 sm:mr-10 sm:py-4 sm:ml-32 md:ml-40 lg:ml-52'>
+                        <div className='flex items-center justify-center w-full m:justify-start'>
+                            <span className='capitalize font-bold text-lg '>
+                                {profile.fullName}
+                            </span>
+                            <span className='hidden ml-6 cursor-pointer sm:block' onClick={() => setFollowingModalIsOpen(true)}>
+                                <b>{profileFollowing.length}</b> following
+                            </span>
+                            <span className='hidden ml-6 cursor-pointer sm:block' onClick={() => setFollowersModalIsOpen(true)}>
+                                <b>{profileFollowers.length}</b> followers
+                            </span>
+                            <button className='hidden ml-auto space-x-1 items-center px-8 py-1 bg-blue-400 text-white rounded-sm hover:cursor-pointer hover:bg-blue-500 transition-all duration-200 sm:flex' onClick={followProfile.bind(null, profile._id)}>
+                                <UserAddIcon className='h-5' />
+                                <span>Follow</span>
+                            </button>
+                        </div>
+                        <div className='flex justify-evenly px-10 w-full sm:hidden'>
+                            <span className='cursor-pointer' onClick={() => setFollowingModalIsOpen(true)}>
+                                <b>{profileFollowing.length}</b> following
+                            </span>
+                            <span className='cursor-pointer' onClick={() => setFollowersModalIsOpen(true)}>
+                                <b>{profileFollowers.length}</b> followers
+                            </span>
+                        </div>
+                        <div className='flex px-10 text-center text-gray-500 sm:text-left sm:pl-0'>
+                            Nostrud nisi Lorem non voluptate reprehenderit ex ullamco consequat cillum Lorem fugiat aliqua ut.
+                        </div>
+                        <div className='flex sm:hidden'>
+                            <button className='flex space-x-1 items-center px-10 py-2 bg-blue-400 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 transition-all duration-200'
+                                onClick={followProfile.bind(null, profile._id)}>
+                                <UserAddIcon className='h-5' />
+                                <span>Follow</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
@@ -109,7 +201,7 @@ export default Profile
 export async function getStaticPaths() {
     return {
         paths: [],
-        fallback: true
+        fallback: 'blocking'
     }
 }
 
