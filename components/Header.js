@@ -5,24 +5,21 @@ import { HomeIcon, SearchIcon, BookmarkIcon, ChevronDownIcon, UserCircleIcon, Us
 import { Menu, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import useHttpToken from '../hooks/use-http-token'
+
+const PROFILE_IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
 
 const Header = () => {
     const [profile, setProfile] = useState({})
     const router = useRouter()
+    const { error, isLoading, sendRequest } = useHttpToken()
 
-    useEffect(async () => {
-        try {
-            const token = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN)
-            const { _id } = jwtDecode(token)
-            const { data: profileData } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}profile-by-user/${_id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            setProfile(profileData.profile)
-        } catch ({ response }) {
-            alert(response?.data.message)
-        }
+    useEffect(() => {
+        const token = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN)
+        const { _id } = jwtDecode(token)
+        sendRequest({ url: `profile-by-user/${_id}` }, ({ data }) => {
+            setProfile(data.profile)
+        })
     }, [setProfile])
 
     const redirectTo = (route) => {
@@ -99,8 +96,8 @@ const Header = () => {
             <Menu as='div' className='flex'>
                 <Menu.Button className='flex items-center space-x-1 cursor-pointer group'>
                     <picture className='flex items-center mr-1'>
-                        <source media='(min-width: 768px)' srcSet='/images/default_profile_normal.png' width={44} />
-                        <img src='/images/default_profile_normal.png' alt='Default profile image' className='rounded-full' width={26} />
+                        <source media='(min-width: 768px)' srcSet={profile.picture ? `${PROFILE_IMAGE_BASE_URL}${profile.picture}` : '/images/default_profile_normal.png'} width={44} />
+                        <img src={profile.picture ? `${PROFILE_IMAGE_BASE_URL}${profile.picture}` : '/images/default_profile_normal.png'} alt='Profile image' className='rounded-full' width={26} />
                     </picture>
                     <span className='hidden md:flex md:font-semibold capitalize md:group-hover:text-[#2F80ED]'>{profile.fullName || 'User'}</span>
                     <ChevronDownIcon className='nav__image h-3' />
