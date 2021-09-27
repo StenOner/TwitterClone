@@ -4,7 +4,7 @@ import useHttpToken from '../hooks/use-http-token'
 
 const PROFILE_IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
 
-const NewTweet = ({ profile }) => {
+const NewTweet = ({ profile, addTweet }) => {
     const tweetCommentRef = useRef()
     const { error, isLoading, sendRequest } = useHttpToken()
 
@@ -16,6 +16,8 @@ const NewTweet = ({ profile }) => {
             state: true
         }
         sendRequest({ method: 'POST', url: 'tweet/new', body: tweetBody }, ({ data }) => {
+            tweetCommentRef.current.value = ''
+            addTweet(data.tweet)
             alert(data.message)
         })
     }

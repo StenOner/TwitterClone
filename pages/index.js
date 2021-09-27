@@ -5,8 +5,10 @@ import NewTweet from '../components/NewTweet'
 import Trends from '../components/Trends'
 import useHttpToken from '../hooks/use-http-token'
 import Tweets from '../components/Tweets'
+import Retweets from '../components/Retweets'
 
 const Home = () => {
+  const [newTweet, setNewTweet] = useState(null)
   const [profile, setProfile] = useState({})
   const { error, isLoading, sendRequest } = useHttpToken()
 
@@ -18,15 +20,16 @@ const Home = () => {
     })
   }, [setProfile])
 
+  const addTweet = (tweet) => {
+    setNewTweet(tweet)
+  }
+
   return (
     <div className='flex w-[85%] justify-center pt-4'>
       <div className='flex flex-col w-1/2 space-y-6'>
-        <NewTweet profile={profile} />
-        <div className='flex space-x-2 text-sm text-gray-400'>
-          <RefreshIcon className='h-5' />
-          <span>{profile.fullName} Retweeted</span>
-        </div>
-        <Tweets profile={profile} />
+        <NewTweet profile={profile} addTweet={addTweet} />
+        <Retweets profile={profile} />
+        <Tweets profile={profile} newTweet={newTweet} />
       </div>
       <div className='flex flex-col'>
         <Trends />

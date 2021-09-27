@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import useHttpToken from '../hooks/use-http-token'
+import Tweet from './Tweet'
 
-const PROFILE_IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
 
-const Tweets = ({ profile }) => {
+const Tweets = ({ profile, newTweet }) => {
     const [tweets, setTweets] = useState([])
     const { error, isLoading, sendRequest } = useHttpToken()
 
@@ -14,15 +15,18 @@ const Tweets = ({ profile }) => {
         })
     }, [profile, sendRequest, setTweets])
 
+    useEffect(() => {
+        if (!newTweet) return
+        setTweets((prevState) => {
+            return [newTweet, ...prevState]
+        })
+    }, [setTweets, newTweet])
+
     return (
-        <div className='flex flex-col w-full bg-white rounded-xl px-5 py-3'>
-            <ul>
-                {tweets.map(tweet => (
-                    <li>
-                        {tweet.content}
-                    </li>
-                ))}
-            </ul>
+        <div className='flex flex-col w-full space-y-6'>
+            {tweets?.map(tweet => (
+                <Tweet key={uuidv4()} profile={profile} tweet={tweet} />
+            ))}
         </div>
     )
 }
