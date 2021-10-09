@@ -10,7 +10,7 @@ const Retweets = ({ profile }) => {
 
     useEffect(() => {
         if (!profile?._id) return
-        sendRequest({ url: `tweet-retweets-by-profile/${profile._id}` }, ({ data }) => {
+        sendRequest({ url: `tweets-retweets/profiles/${profile._id}` }, ({ data }) => {
             setRetweets(data.tweetRetweets)
         })
     }, [profile, sendRequest, setRetweets])

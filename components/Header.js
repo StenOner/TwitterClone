@@ -1,26 +1,17 @@
-import axios from 'axios'
-import Link from 'next/link'
-import jwtDecode from 'jwt-decode'
 import { HomeIcon, SearchIcon, BookmarkIcon, ChevronDownIcon, UserCircleIcon, UsersIcon, CogIcon, LogoutIcon } from '@heroicons/react/solid'
 import { Menu, Transition } from '@headlessui/react'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
 import { useRouter } from 'next/router'
+import axios from 'axios'
+import Link from 'next/link'
 import useHttpToken from '../hooks/use-http-token'
+import WithAuth from '../hocs/WithAuth'
 
-const PROFILE_IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
+const IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
 
-const Header = () => {
-    const [profile, setProfile] = useState({})
+const Header = ({ myProfile }) => {
     const router = useRouter()
     const { error, isLoading, sendRequest } = useHttpToken()
-
-    useEffect(() => {
-        const token = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN)
-        const { _id } = jwtDecode(token)
-        sendRequest({ url: `profile-by-user/${_id}` }, ({ data }) => {
-            setProfile(data.profile)
-        })
-    }, [setProfile])
 
     const redirectTo = (route) => {
         router.push(route)
@@ -96,10 +87,10 @@ const Header = () => {
             <Menu as='div' className='flex'>
                 <Menu.Button className='flex items-center space-x-1 cursor-pointer group'>
                     <picture className='flex items-center mr-1'>
-                        <source media='(min-width: 768px)' srcSet={profile.picture ? `${PROFILE_IMAGE_BASE_URL}${profile.picture}` : '/images/default_profile_normal.png'} width={44} />
-                        <img src={profile.picture ? `${PROFILE_IMAGE_BASE_URL}${profile.picture}` : '/images/default_profile_normal.png'} alt='Profile image' className='rounded-full' width={26} />
+                        <source media='(min-width: 768px)' srcSet={myProfile.picture ? `${IMAGE_BASE_URL}${myProfile.picture}` : '/images/default_profile_normal.png'} width={44} />
+                        <img src={myProfile.picture ? `${IMAGE_BASE_URL}${myProfile.picture}` : '/images/default_profile_normal.png'} alt='Profile image' className='rounded-full' width={26} />
                     </picture>
-                    <span className='hidden md:flex md:font-semibold capitalize md:group-hover:text-[#2F80ED]'>{profile.fullName || 'User'}</span>
+                    <span className='hidden md:flex md:font-semibold capitalize md:group-hover:text-[#2F80ED]'>{myProfile.fullName || 'User'}</span>
                     <ChevronDownIcon className='nav__image h-3' />
                 </Menu.Button>
                 <Transition
@@ -115,7 +106,7 @@ const Header = () => {
                             <Menu.Item>
                                 {({ active }) => (
                                     <div className={`${active ? 'bg-blue-400 text-white' : 'text-gray-600'} group flex rounded-md w-full p-2 cursor-pointer`}
-                                        onClick={redirectTo.bind(null, `/profile/${profile._id}`)}>
+                                        onClick={redirectTo.bind(null, `/profile/${myProfile._id}`)}>
                                         <button className='flex items-center space-x-2'>
                                             <UserCircleIcon className='hidden md:flex md:h-5' />
                                             <span>My Profile</span>
@@ -164,4 +155,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default WithAuth(Header)

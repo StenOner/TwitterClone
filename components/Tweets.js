@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import WithAuth from '../hocs/WithAuth'
 import useHttpToken from '../hooks/use-http-token'
 import Tweet from './Tweet'
-
 
 const Tweets = ({ profile, newTweet }) => {
     const [tweets, setTweets] = useState([])
@@ -10,7 +10,7 @@ const Tweets = ({ profile, newTweet }) => {
 
     useEffect(() => {
         if (!profile?._id) return
-        sendRequest({ url: `tweets-by-profile/${profile._id}` }, ({ data }) => {
+        sendRequest({ url: `tweets/profiles/${profile._id}` }, ({ data }) => {
             setTweets(data.tweets)
         })
     }, [profile, sendRequest, setTweets])
@@ -31,4 +31,4 @@ const Tweets = ({ profile, newTweet }) => {
     )
 }
 
-export default Tweets
+export default WithAuth(Tweets)

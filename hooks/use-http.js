@@ -9,15 +9,15 @@ const useHttp = () => {
         setError(null)
         try {
             const headers = {
-                'Content-Type': 'application/json',
+                'Content-Type': requestConfig.headers?.contentType ?? 'application/json',
             }
             let response = null
             switch (requestConfig.method?.toUpperCase()) {
                 case 'POST':
-                    response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}${requestConfig.url}`, JSON.stringify(requestConfig.body), { headers })
+                    response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}${requestConfig.url}`, requestConfig.body, { headers })
                     break
                 case 'PUT':
-                    response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}${requestConfig.url}`, JSON.stringify(requestConfig.body), { headers })
+                    response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}${requestConfig.url}`, requestConfig.body, { headers })
                     break
                 case 'DELETE':
                     response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}${requestConfig.url}`, { headers })

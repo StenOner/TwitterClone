@@ -1,3 +1,5 @@
+import WithAuth from "../hocs/WithAuth"
+
 const Trends = () => {
     return (
         <div>
@@ -6,4 +8,4 @@ const Trends = () => {
     )
 }
 
-export default Trends
+export default WithAuth(Trends)

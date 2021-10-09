@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import useHttp from '../../hooks/use-http'
 
 const LogIn = () => {

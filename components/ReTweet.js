@@ -20,7 +20,7 @@ const ReTweet = ({ profile, retweet: retweetData }) => {
             </div>
             <div className='flex w-full'>
                 <span>
-                    {retweet.content || 'xd'}
+                    {retweet.content}
                 </span>
             </div>
             <div className='flex w-full'>

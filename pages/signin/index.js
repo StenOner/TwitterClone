@@ -27,10 +27,10 @@ const SignIn = () => {
             const password = passwordRef.current.value
             const userName = userNameRef.current.value
             const state = true
-            const { data: userData } = await sendRequestHttp({ method: 'POST', url: 'user/new', body: { email, password, userName, state } })
+            const { data: userData } = await sendRequestHttp({ method: 'POST', url: 'users', body: { email, password, userName, state } })
             const { data: loginData } = await sendRequestHttp({ method: 'POST', url: 'auth', body: { email, password } })
             storeTokens(loginData.accessToken, loginData.refreshToken)
-            await sendRequestHttpToken({ method: 'POST', url: 'profile/new', body: { ...DEFAULT_USER, userID: userData.user._id } })
+            await sendRequestHttpToken({ method: 'POST', url: 'profiles', body: { ...DEFAULT_USER, userID: userData.user._id } })
             router.push('/')
         } catch (error) {
             console.log(errorHttp || errorHttpToken || error.message);

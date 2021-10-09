@@ -1,10 +1,10 @@
-import jwtDecode from 'jwt-decode'
 import { RefreshIcon, UserAddIcon, XIcon } from '@heroicons/react/solid'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import Link from 'next/link'
 import useHttpToken from '../../../hooks/use-http-token'
 import ReactModal from 'react-modal'
+import WithAuth from '../../../hocs/WithAuth'
 
 const BASE_PROFILE = {
     _id: '',
@@ -16,13 +16,12 @@ const BASE_PROFILE = {
     createdAt: new Date(),
     state: true
 }
-const PROFILE_IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
+const IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
 
 ReactModal.defaultStyles.overlay.zIndex = 1000
 ReactModal.defaultStyles.overlay.backgroundColor = 'hls(0, 0%, 100%)'
 
-const Profile = ({ profileID }) => {
-    const [myProfile, setMyProfile] = useState(BASE_PROFILE)
+const Profile = ({ myProfile, profileID }) => {
     const [profile, setProfile] = useState(BASE_PROFILE)
     const [myProfileFollowing, setMyProfileFollowing] = useState([])
     const [profileFollowers, setProfileFollowers] = useState([])
@@ -33,38 +32,30 @@ const Profile = ({ profileID }) => {
 
     useEffect(() => {
         if (!profileID) return
-        sendRequest({ url: `profile/${profileID}` }, ({ data }) => {
+        sendRequest({ url: `profiles/${profileID}` }, ({ data }) => {
             setProfile(data.profile)
         })
     }, [profileID, setProfile])
 
     useEffect(() => {
-        const token = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN)
-        const { _id: userID } = jwtDecode(token)
-        sendRequest({ url: `profile-by-user/${userID}` }, ({ data }) => {
-            setMyProfile(data.profile)
-        })
-    }, [setMyProfile])
-
-    useEffect(() => {
         if (!profileID) return
-        sendRequest({ url: `profile-followers/${profileID}` }, ({ data }) => {
+        sendRequest({ url: `profiles-followers/${profileID}` }, ({ data }) => {
             setProfileFollowers(data.profileFollowers)
         })
-        sendRequest({ url: `profile-following/${profileID}` }, ({ data }) => {
+        sendRequest({ url: `profiles-following/${profileID}` }, ({ data }) => {
             setProfileFollowing(data.profileFollowing)
         })
     }, [profileID, setProfileFollowers, setProfileFollowing])
 
     useEffect(() => {
         if (!myProfile._id) return
-        sendRequest({ url: `profile-following/${myProfile._id}` }, ({ data }) => {
+        sendRequest({ url: `profiles-following/${myProfile._id}` }, ({ data }) => {
             setMyProfileFollowing(data.profileFollowing)
         })
     }, [myProfile._id, setMyProfileFollowing])
 
     const followProfile = (followingID) => {
-        sendRequest({ method: 'POST', url: 'profile-follow/new', body: { followingProfileID: followingID, followerProfileID: myProfile._id, state: true } }, ({ data }) => {
+        sendRequest({ method: 'POST', url: 'profiles-follows', body: { followingProfileID: followingID, followerProfileID: myProfile._id, state: true } }, ({ data }) => {
             if (profile._id === myProfile._id) {
                 setProfileFollowing((prevState) => {
                     return [...prevState, data.profileFollow]
@@ -99,7 +90,7 @@ const Profile = ({ profileID }) => {
                     {profileFollowing.map(({ followingProfileID }) => (
                         <div key={uuidv4()} className='flex mt-2'>
                             <div className='self-start max-w-[3rem]'>
-                                <img src={followingProfileID.picture ? `${PROFILE_IMAGE_BASE_URL}${followingProfileID.picture}` : '/images/default_profile_normal.png'} className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
+                                <img src={followingProfileID.picture ? `${IMAGE_BASE_URL}${followingProfileID.picture}` : '/images/default_profile_normal.png'} className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
                             </div>
                             <div className='flex flex-col ml-4 justify-between'>
                                 <Link href={`/profile/${followingProfileID._id}`}>
@@ -146,7 +137,7 @@ const Profile = ({ profileID }) => {
                     {profileFollowers.map(({ followerProfileID }) => (
                         <div key={uuidv4()} className='flex mt-2'>
                             <div className='self-start max-w-[3rem]'>
-                                <img src={followerProfileID.picture ? `${PROFILE_IMAGE_BASE_URL}${followerProfileID.picture}` : '/images/default_profile_normal.png'} className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
+                                <img src={followerProfileID.picture ? `${IMAGE_BASE_URL}${followerProfileID.picture}` : '/images/default_profile_normal.png'} className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
                             </div>
                             <div className='flex flex-col ml-4 justify-between'>
                                 <Link href={`/profile/${followerProfileID._id}`}>
@@ -177,10 +168,10 @@ const Profile = ({ profileID }) => {
             </ReactModal>
             <div className='flex flex-col'>
                 <div className='max-h-[7.5rem] sm:max-h-[10rem] md:max-h-[15rem] lg:max-h-[22.5rem]'>
-                    <img src={profile.banner ? `${PROFILE_IMAGE_BASE_URL}${profile.banner}` : '/images/default_banner.png'} className='max-h-full' width='100%' />
+                    <img src={profile.banner ? `${IMAGE_BASE_URL}${profile.banner}` : '/images/default_banner.png'} className='max-h-full' width='100%' />
                 </div>
                 <div className='absolute left-[50%] top-[2.5rem] h-[6rem] w-[6rem] z-10 sm:left-[12%] sm:top-[5rem] sm:h-[6rem] sm:w-[6rem] md:left-[12%] md:top-[9rem] md:h-[7.5rem] md:w-[7.5rem] lg:left-[12%] lg:top-[14rem] lg:h-[10.5rem] lg:w-[10.5rem]'>
-                    <img src={profile.picture ? `${PROFILE_IMAGE_BASE_URL}${profile.picture}` : '/images/default_profile_normal.png'} className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
+                    <img src={profile.picture ? `${IMAGE_BASE_URL}${profile.picture}` : '/images/default_profile_normal.png'} className='rounded-lg max-h-full relative left-[-42%] sm:left-0' width='100%' />
                 </div>
                 <div className='flex py-2 bg-white rounded-lg w-[85%] self-center sm:mt-[-2.5rem] md:mt-[-3.5rem] lg:mt-[-5rem]'>
                     <div className='flex flex-col w-full space-y-2 items-center mt-12 sm:items-start sm:mt-0 sm:mr-10 sm:py-4 sm:ml-36 md:ml-44 lg:ml-[17rem]'>
@@ -270,7 +261,7 @@ const Profile = ({ profileID }) => {
     )
 }
 
-export default Profile
+export default WithAuth(Profile)
 
 export async function getStaticPaths() {
     return {
