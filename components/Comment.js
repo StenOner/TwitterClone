@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { HeartIcon } from '@heroicons/react/outline'
+import { v4 as uuidv4 } from 'uuid'
 import dateFormat from 'dateformat'
 import useHttpToken from '../hooks/use-http-token'
 import WithAuth from '../hocs/WithAuth'
@@ -7,6 +8,15 @@ import WithAuth from '../hocs/WithAuth'
 const IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
 
 const Comment = ({ profile, comment }) => {
+    const [mediacontents, setMediacontents] = useState([])
+    const { error, isLoading, sendRequest } = useHttpToken()
+
+    useEffect(() => {
+        sendRequest({ url: `tweets-comments-mediacontents/tweets-comments/${comment._id}` }, ({ data }) => {
+            setMediacontents(data.tweetCommentMediacontents)
+        })
+    }, [sendRequest, setMediacontents])
+
     return (
         <div className='flex flex-col bg-white rounded-xl mb-2 space-y-2 text-sm'>
             <div className='flex space-x-4'>
@@ -25,9 +35,12 @@ const Comment = ({ profile, comment }) => {
                             {comment.content}
                         </span>
                     </div>
-                    <div className='flex w-full'>
-                        comment image
-                    </div>
+                    {mediacontents.length > 0 && (
+                        <div className='flex w-full space-x-2'>
+                            {mediacontents.map((mediacontent) => (
+                                <img key={uuidv4()} src={`${IMAGE_BASE_URL}${mediacontent.content}`} />
+                            ))}
+                        </div>)}
                     <div className='flex w-full space-x-4 text-gray-400'>
                         <div className='flex flex-row space-x-1 py-2 cursor-pointer items-center hover:bg-gray-100'>
                             <HeartIcon className='h-4' />
