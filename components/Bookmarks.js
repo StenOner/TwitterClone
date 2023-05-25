@@ -16,8 +16,8 @@ const Bookmarks = ({ myProfile }) => {
 
     return (
         <div className='flex flex-col w-full space-y-6'>
-            {tweetBookmarks?.map(tweetBookmark => (
-                <Tweet key={uuidv4()} myProfile={myProfile} tweet={tweetBookmark.tweetID} />
+            {tweetBookmarks.map(tweetBookmark => (
+                <Tweet key={uuidv4()} profile={myProfile} tweet={tweetBookmark.tweetID} />
             ))}
         </div>
     )
