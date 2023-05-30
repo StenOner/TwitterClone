@@ -12,7 +12,7 @@ const NewComment = ({ profile, tweet, addComment }) => {
     const publishComment = (e) => {
         if (e.key !== 'Enter') return
         const commentBody = {
-            tweetID: tweet._id,
+            tweetID: tweet.tweetID,
             profileID: profile._id,
             content: commentInputRef.current.value,
             state: true,

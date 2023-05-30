@@ -71,14 +71,11 @@ const Tweet = ({ profile, tweet }) => {
     const { error, isLoading, sendRequest } = useHttpToken()
 
     useEffect(() => {
-        if (!tweet?._id) return
-        sendRequest({ url: `tweets-info/tweets/${tweet._id}` }, ({ data }) => {
-            tweetInfoDispatch({ type: 'set_state', payload: data.tweetInfo })
-        })
-    }, [tweet, sendRequest, tweetInfoDispatch])
+        tweetInfoDispatch({ type: 'set_state', payload: tweet })
+    }, [tweet, tweetInfoDispatch])
 
     useEffect(() => {
-        if (!tweet?._id || !profile?._id) return
+        if (!profile?._id) return
         if (tweet.profileID._id === profile._id) return setCanReply(true)
         if (tweet.tweetReplyOptionID.content?.toLowerCase() === 'everyone') return setCanReply(true)
         if (tweet.tweetReplyOptionID.content?.toLowerCase() === 'people you follow') {
@@ -117,14 +114,14 @@ const Tweet = ({ profile, tweet }) => {
                     {tweet.content}
                 </span>
             </div>
-            <div className='flex w-full space-x-2'>
-                {tweetInfoState.mediaContents.length > 0 && (
+            {tweetInfoState.mediaContents.length > 0 && (
+                <div className='flex w-full space-x-2'>
                     <Suspense fallback={<Loading />}>
                         <ImageGallery
                             images={tweetInfoState.mediaContents} />
                     </Suspense>
-                )}
-            </div>
+                </div>
+            )}
             <div className='flex space-x-2 text-xs text-gray-400 justify-end'>
                 <span>
                     {tweetInfoState.comments.length} Comment{tweetInfoState.comments.length !== 1 && 's'}
@@ -143,9 +140,15 @@ const Tweet = ({ profile, tweet }) => {
                 <hr />
                 <div className='flex justify-evenly'>
                     <CommentButton profile={profile} tweet={tweet} comments={tweetInfoState.comments} />
-                    <RetweetButton profile={profile} tweet={tweet} retweets={tweetInfoState.retweets} addRetweet={(retweet) => tweetInfoDispatch({ type: 'add_retweet', payload: retweet })} deleteRetweet={(retweetID) => tweetInfoDispatch({ type: 'delete_retweet', payload: retweetID })} />
-                    <LikeButton profile={profile} tweet={tweet} likes={tweetInfoState.likes} addLike={(like) => tweetInfoDispatch({ type: 'add_like', payload: like })} deleteLike={(likeID) => tweetInfoDispatch({ type: 'delete_like', payload: likeID })} />
-                    <BookmarkButton profile={profile} tweet={tweet} bookmarks={tweetInfoState.bookmarks} addBookmark={(bookmark) => tweetInfoDispatch({ type: 'add_bookmark', payload: bookmark })} deleteBookmark={(bookmarkID) => tweetInfoDispatch({ type: 'delete_bookmark', payload: bookmarkID })} />
+                    <RetweetButton profile={profile} tweet={tweet} retweets={tweetInfoState.retweets}
+                        addRetweet={(retweet) => tweetInfoDispatch({ type: 'add_retweet', payload: retweet })}
+                        deleteRetweet={(retweetID) => tweetInfoDispatch({ type: 'delete_retweet', payload: retweetID })} />
+                    <LikeButton profile={profile} tweet={tweet} likes={tweetInfoState.likes}
+                        addLike={(like) => tweetInfoDispatch({ type: 'add_like', payload: like })}
+                        deleteLike={(likeID) => tweetInfoDispatch({ type: 'delete_like', payload: likeID })} />
+                    <BookmarkButton profile={profile} tweet={tweet} bookmarks={tweetInfoState.bookmarks}
+                        addBookmark={(bookmark) => tweetInfoDispatch({ type: 'add_bookmark', payload: bookmark })}
+                        deleteBookmark={(bookmarkID) => tweetInfoDispatch({ type: 'delete_bookmark', payload: bookmarkID })} />
                 </div>
                 <hr />
                 <div className='flex w-full'>

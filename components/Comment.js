@@ -41,14 +41,14 @@ const Comment = ({ profile, comment }) => {
                             {comment.content}
                         </span>
                     </div>
-                    <div className='flex w-full space-x-2'>
-                        {mediaContents.length > 0 && (
+                    {mediaContents.length > 0 && (
+                        <div className='flex w-full space-x-2'>
                             <Suspense fallback={<Loading />}>
                                 <ImageGallery
                                     images={mediaContents} />
                             </Suspense>
-                        )}
-                    </div>
+                        </div>
+                    )}
                     <CommentLikeButton profile={profile} tweetComment={comment} />
                 </div>
             </div>

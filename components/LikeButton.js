@@ -16,7 +16,7 @@ const LikeButton = ({ profile, tweet, likes, addLike, deleteLike }) => {
 
     const likeTweetHandler = () => {
         const tweetLikeBody = {
-            tweetID: tweet._id,
+            tweetID: tweet.tweetID,
             profileID: profile._id,
             state: true,
         }

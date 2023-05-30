@@ -16,7 +16,7 @@ const BookmarkButton = ({ profile, tweet, bookmarks, addBookmark, deleteBookmark
 
     const bookmarkTweetHandler = () => {
         const bookmarkTweetBody = {
-            tweetID: tweet._id,
+            tweetID: tweet.tweetID,
             profileID: profile._id,
             state: true,
         }

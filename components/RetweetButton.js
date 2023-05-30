@@ -16,7 +16,7 @@ const RetweetButton = ({ profile, tweet, retweets, addRetweet, deleteRetweet }) 
 
     const retweetHandler = () => {
         const retweetBody = {
-            tweetID: tweet._id,
+            tweetID: tweet.tweetID,
             profileID: profile._id,
             state: true,
         }
