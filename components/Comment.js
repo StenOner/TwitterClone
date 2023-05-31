@@ -1,23 +1,12 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy } from 'react'
 import CommentLikeButton from './CommentLikeButton'
 import dateFormat from 'dateformat'
 import Link from 'next/link'
 import Loading from './Loading'
-import useHttpToken from '@/hooks/use-http-token'
 const ImageGallery = lazy(() => import('./ImageGallery'))
 const ImageMediaContent = lazy(() => import('./ImageMediaContent'))
 
 const Comment = ({ profile, comment }) => {
-    const [mediaContents, setMediaContents] = useState([])
-    const { error, isLoading, sendRequest } = useHttpToken()
-
-    useEffect(() => {
-        if (!comment?._id) return
-        sendRequest({ url: `tweets-comments-mediacontents/tweets-comments/${comment._id}` }, ({ data }) => {
-            setMediaContents(data.tweetCommentMediacontents)
-        })
-    }, [comment, sendRequest, setMediaContents])
-
     return (
         <div className='flex flex-col bg-white rounded-xl mb-2 space-y-2 text-sm'>
             <div className='flex space-x-4'>
@@ -41,11 +30,11 @@ const Comment = ({ profile, comment }) => {
                             {comment.content}
                         </span>
                     </div>
-                    {mediaContents.length > 0 && (
+                    {comment.mediaContents.length > 0 && (
                         <div className='flex w-full space-x-2'>
                             <Suspense fallback={<Loading />}>
                                 <ImageGallery
-                                    images={mediaContents} />
+                                    images={comment.mediaContents} />
                             </Suspense>
                         </div>
                     )}

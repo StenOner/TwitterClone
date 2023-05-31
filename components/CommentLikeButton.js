@@ -3,16 +3,9 @@ import { HeartIcon } from '@heroicons/react/24/outline'
 import useHttpToken from '@/hooks/use-http-token'
 
 const CommentLikeButton = ({ profile, tweetComment }) => {
-    const [likes, setLikes] = useState([])
+    const [likes, setLikes] = useState(tweetComment.likes || [])
     const [isLiked, setIsLiked] = useState(false)
     const { error, isLoading, sendRequest } = useHttpToken()
-
-    useEffect(() => {
-        if (!tweetComment?._id) return
-        sendRequest({ url: `tweets-comments-likes/comments/${tweetComment._id}` }, ({ data }) => {
-            setLikes(data.tweetCommentLikes)
-        })
-    }, [tweetComment, sendRequest, setLikes])
 
     useEffect(() => {
         if (likes.some((_like) => _like.profileID._id === profile._id)) {
