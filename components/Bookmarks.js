@@ -4,20 +4,20 @@ import Tweet from './Tweet'
 import useHttpToken from '@/hooks/use-http-token'
 
 const Bookmarks = ({ myProfile }) => {
-    const [tweetBookmarks, setTweetBookmarks] = useState([])
+    const [tweetsInfo, setTweetsInfo] = useState([])
     const { error, isLoading, sendRequest } = useHttpToken()
 
     useEffect(() => {
         if (!myProfile?._id) return
         sendRequest({ url: `tweets-bookmarks/profiles/${myProfile._id}` }, ({ data }) => {
-            setTweetBookmarks(data.tweetBookmarks)
+            setTweetsInfo(data.tweetsInfo)
         })
-    }, [myProfile, sendRequest, setTweetBookmarks])
+    }, [myProfile, sendRequest, setTweetsInfo])
 
     return (
         <div className='flex flex-col w-full space-y-6'>
-            {tweetBookmarks.map(tweetBookmark => (
-                <Tweet key={uuidv4()} profile={myProfile} tweet={tweetBookmark.tweetID} />
+            {tweetsInfo.map(tweetInfo => (
+                <Tweet key={uuidv4()} profile={myProfile} tweet={tweetInfo} />
             ))}
         </div>
     )
