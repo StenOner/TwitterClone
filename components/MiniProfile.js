@@ -59,7 +59,7 @@ const MiniProfile = ({ myProfile, profile, deleteProfileOnFollow }) => {
                 <Suspense fallback={<Loading />}>
                     <ImageMediaContent
                         src={profile.banner ?? '/images/default_banner.png'}
-                        className='rounded-md h-32 w-full'
+                        className='rounded-md h-28 w-full'
                         alt='Profile banner' />
                 </Suspense>
             </div>

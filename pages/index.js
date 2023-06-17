@@ -13,12 +13,12 @@ const Home = ({ myProfile }) => {
   }
 
   return (
-    <div className='flex justify-center pt-4 w-full'>
-      <div className='flex flex-col space-y-6 max-w-3xl w-[70%] md:w-[60%]'>
+    <div className='flex justify-center pt-6 w-full space-x-5'>
+      <div className='flex flex-col space-y-5 max-w-3xl w-[70%] md:w-[60%]'>
         <NewTweet profile={myProfile} addTweet={addTweet} />
         <Tweets profile={myProfile} newTweet={newTweet} />
       </div>
-      <div className='hidden max-w-sm md:flex md:flex-col md:w-[30%]'>
+      <div className='hidden max-w-[20rem] space-y-5 md:flex md:flex-col md:w-[30%]'>
         <Trends profile={myProfile} />
         <WhoToFollow myProfile={myProfile} />
       </div>

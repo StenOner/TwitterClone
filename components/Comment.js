@@ -30,7 +30,7 @@ const Comment = ({ profile, comment }) => {
                             {comment.content}
                         </span>
                     </div>
-                    {comment.mediaContents.length > 0 && (
+                    {comment.mediaContents?.length > 0 && (
                         <div className='flex w-full space-x-2'>
                             <Suspense fallback={<Loading />}>
                                 <ImageGallery

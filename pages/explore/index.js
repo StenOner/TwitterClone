@@ -1,9 +1,10 @@
-import withAuth from "@/hocs/withAuth"
+import ExploreTweets from '@/components/ExploreTweets'
+import withAuth from '@/hocs/withAuth'
 
-const Explore = () => {
+const Explore = ({ myProfile }) => {
     return (
-        <div>
-
+        <div className='flex w-full pt-6'>
+            <ExploreTweets profile={myProfile} />
         </div>
     )
 }

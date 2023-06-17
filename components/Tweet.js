@@ -76,14 +76,8 @@ const Tweet = ({ profile, tweet }) => {
 
     useEffect(() => {
         if (!profile?._id) return
-        if (tweet.profileID._id === profile._id) return setCanReply(true)
-        if (tweet.tweetReplyOptionID.content?.toLowerCase() === 'everyone') return setCanReply(true)
-        if (tweet.tweetReplyOptionID.content?.toLowerCase() === 'people you follow') {
-            sendRequest({ url: `profiles-followers/${tweet.profileID._id}` }, ({ data }) => {
-                const followers = data.profileFollowers
-                if (followers.some(follower => follower.followerProfileID._id === profile._id)) setCanReply(true)
-            })
-        }
+        if (tweet.tweetReplyOptionID.content?.toLowerCase() === 'everyone' || tweet.profileID._id === profile._id) return setCanReply(true)
+        if (tweet.profileID.followers.some(follower => follower.followerProfileID._id === profile._id)) return setCanReply(true)
     }, [tweet, profile, setCanReply, sendRequest])
 
     const addCommentHandler = useCallback((comment) => {
@@ -105,7 +99,7 @@ const Tweet = ({ profile, tweet }) => {
                         {tweet.profileID.fullName}
                     </Link>
                     <span className='text-gray-400 text-xs'>
-                        {dateFormat(new Date(tweet?.createdAt ?? '1970/01/01'), 'dd mmmm "at" HH:MM')}
+                        {dateFormat(new Date(tweet?.createdAt ?? '1970/01/01'), 'd mmmm "at" HH:MM')}
                     </span>
                 </div>
             </div>

@@ -15,7 +15,7 @@ const Trends = ({ profile }) => {
     }, [sendRequest, setTrends])
 
     return (
-        <div className='flex flex-col w-full bg-white rounded-xl ml-5 px-5 py-3'>
+        <div className='flex flex-col w-full bg-white rounded-xl px-5 py-3'>
             <span className='font-semibold'>Trends</span>
             <hr className='my-2' />
             <div className='flex flex-col w-full space-y-4'>

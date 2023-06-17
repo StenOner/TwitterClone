@@ -21,7 +21,7 @@ const WhoToFollow = ({ myProfile }) => {
     }
 
     return (
-        <div className='flex flex-col w-full bg-white rounded-xl ml-5 mt-5 px-5 py-3'>
+        <div className='flex flex-col w-full bg-white rounded-xl px-5 py-3'>
             <span className='font-semibold'>Who to Follow</span>
             <hr className='my-2' />
             <div className='flex flex-col space-y-6'>

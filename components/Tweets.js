@@ -53,7 +53,7 @@ const Tweets = ({ profile, newTweet, isFilterMode }) => {
             {isFilterMode && (
                 <TweetFilter filterTweets={(filterMode) => filterTweetsHandler(filterMode)} />
             )}
-            <div className='flex flex-col w-full space-y-6'>
+            <div className='flex flex-col w-full space-y-5'>
                 {filteredTweets.map(tweet => (
                     <Tweet key={uuidv4()} profile={profile} tweet={tweet} />
                 ))}
