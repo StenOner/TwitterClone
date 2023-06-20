@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import ExploreSort from './ExploreSort'
-import ExploreSearch from './ExploreSearch'
-import Tweet from './Tweet'
+import ExploreSort from '@/components/ExploreSort'
+import ExploreSearch from '@/components/ExploreSearch'
+import Loading from '@/components/Loading'
+import Tweet from '@/components/Tweet'
 import useHttpToken from '@/hooks/use-http-token'
 
 const SORT_MODES = {
@@ -60,7 +61,9 @@ const ExploreTweets = ({ profile }) => {
                 <ExploreSearch searchTweet={searchTweetsHandler} />
                 <div className='flex flex-col w-full space-y-5'>
                     {filteredTweets.map(tweet => (
-                        <Tweet key={uuidv4()} profile={profile} tweet={tweet} />
+                        <Suspense key={uuidv4()} fallback={<Loading />}>
+                            <Tweet profile={profile} tweet={tweet} />
+                        </Suspense>
                     ))}
                 </div>
             </div>

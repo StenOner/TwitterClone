@@ -1,8 +1,10 @@
-import { memo, useEffect, useState } from 'react'
+import { Suspense, lazy, memo, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import Tweet from './Tweet'
+import EmptyFallback from '@/components/EmptyFallback'
+import Loading from '@/components/Loading'
+import TweetFilter from '@/components/TweetFilter'
 import useHttpToken from '@/hooks/use-http-token'
-import TweetFilter from './TweetFilter'
+const Tweet = lazy(() => import('./Tweet'))
 
 const FILTER_MODES = {
     tweets: 'tweets',
@@ -27,6 +29,7 @@ const Tweets = ({ profile, newTweet, isFilterMode }) => {
     useEffect(() => {
         if (!newTweet) return
         setTweets((prevState) => [newTweet, ...prevState])
+        setFilteredTweets((prevState) => [newTweet, ...prevState])
     }, [newTweet, setTweets])
 
     const filterTweetsHandler = (filterMode) => {
@@ -54,8 +57,13 @@ const Tweets = ({ profile, newTweet, isFilterMode }) => {
                 <TweetFilter filterTweets={(filterMode) => filterTweetsHandler(filterMode)} />
             )}
             <div className='flex flex-col w-full space-y-5'>
+                {filteredTweets < 1 && (
+                    <EmptyFallback messages={['There is nothing to see here.', 'Maybe try following someone to fill this space.']} />
+                )}
                 {filteredTweets.map(tweet => (
-                    <Tweet key={uuidv4()} profile={profile} tweet={tweet} />
+                    <Suspense key={uuidv4()} fallback={<Loading />}>
+                        <Tweet profile={profile} tweet={tweet} />
+                    </Suspense>
                 ))}
             </div>
         </>
