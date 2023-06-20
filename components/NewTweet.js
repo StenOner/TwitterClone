@@ -20,7 +20,7 @@ const NewTweet = ({ profile, addTweet }) => {
         })
     }, [sendRequest, setReplyOptions, setSelectedReplyOption])
 
-    const publishTweet = () => {
+    const publishTweet = async () => {
         const comment = tweetCommentRef.current.value
         const tweetBody = {
             profileID: profile._id,
@@ -28,11 +28,29 @@ const NewTweet = ({ profile, addTweet }) => {
             content: comment,
             state: true
         }
-        sendRequest({ method: 'POST', url: 'tweets', body: tweetBody }, ({ data }) => {
-            tweetCommentRef.current.value = ''
-            newTweetMediaContents(data.tweet._id)
-            addTweet(data.tweet)
+        const { data } = await sendRequest({ method: 'POST', url: 'tweets', body: tweetBody })
+        const tweet = tweetFromData(data.tweet)
+        newTweetMediaContents(tweet.tweetID)
+        addTweet(tweet)
+        tweetCommentRef.current.value = ''
+    }
+
+    const tweetFromData = (tweet) => {
+        const files = Array.from(fileRef.current.files)
+        const mediaContents = files.map((file) => {
+            return {
+                content: URL.createObjectURL(file),
+                createdAt: Date.now(),
+                state: true,
+                tweetID: tweet.tweetID._id,
+                __v: 0,
+                _id: '',
+            }
         })
+        return {
+            ...tweet,
+            mediaContents,
+        }
     }
 
     const newTweetMediaContents = (tweetID) => {

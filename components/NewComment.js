@@ -9,7 +9,7 @@ const NewComment = ({ profile, tweet, addComment }) => {
     const fileRef = useRef()
     const { error, isLoading, sendRequest } = useHttpToken()
 
-    const publishComment = (e) => {
+    const publishComment = async (e) => {
         if (e.key !== 'Enter') return
         const commentBody = {
             tweetID: tweet.tweetID,
@@ -17,11 +17,30 @@ const NewComment = ({ profile, tweet, addComment }) => {
             content: commentInputRef.current.value,
             state: true,
         }
-        sendRequest({ method: 'POST', url: 'tweets-comments', body: commentBody }, ({ data }) => {
-            commentInputRef.current.value = ''
-            newCommentMediaContents(data.tweetComment._id)
-            addComment(data.tweetComment)
+        const { data } = await sendRequest({ method: 'POST', url: 'tweets-comments', body: commentBody })
+        const tweetComment = tweetCommentFromData(data.tweetComment)
+        newCommentMediaContents(tweetComment._id)
+        addComment(tweetComment)
+        commentInputRef.current.value = ''
+    }
+
+    const tweetCommentFromData = (comment) => {
+        const files = Array.from(fileRef.current.files)
+        const mediaContents = files.map((file) => {
+            return {
+                content: URL.createObjectURL(file),
+                createdAt: Date.now(),
+                state: true,
+                tweetCommentID: comment.tweetID._id,
+                __v: 0,
+                _id: '',
+            }
         })
+        return {
+            ...comment,
+            likes: [],
+            mediaContents,
+        }
     }
 
     const newCommentMediaContents = (tweetCommentID) => {
@@ -35,6 +54,7 @@ const NewComment = ({ profile, tweet, addComment }) => {
                 uploadFile(data.tweetCommentMediacontent._id, file)
             })
         }
+        fileRef.current.value = null
     }
 
     const uploadFile = (tweetCommentMediaContentID, file) => {
