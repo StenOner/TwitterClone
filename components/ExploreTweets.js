@@ -37,16 +37,16 @@ const ExploreTweets = ({ profile }) => {
     const sortTweetsHandler = (filterMode) => {
         switch (filterMode) {
             case SORT_MODES.top:
-                setFilteredTweets([...filteredTweets].sort((a, b) => b.likes.length - a.likes.length))
+                setFilteredTweets([...tweets].sort((a, b) => b.likes.length - a.likes.length))
                 break
             case SORT_MODES.latest:
-                setFilteredTweets([...filteredTweets].sort((a, b) => b.createdAt - a.createdAt))
+                setFilteredTweets([...tweets].sort((a, b) => b.createdAt - a.createdAt))
                 break
             case SORT_MODES.people:
-                setFilteredTweets([...filteredTweets].sort((a, b) => b.profileID.followers.length - a.profileID.followers.length))
+                setFilteredTweets([...tweets].sort((a, b) => b.profileID.followers.length - a.profileID.followers.length))
                 break
             case SORT_MODES.media:
-                setFilteredTweets([...filteredTweets].sort((a, b) => b.mediaContents.length - a.mediaContents.length))
+                setFilteredTweets([...tweets].sort((a, b) => b.mediaContents.length - a.mediaContents.length))
                 break
             default:
                 throw Error('Unkown sort mode.')

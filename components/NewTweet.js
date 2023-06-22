@@ -99,7 +99,7 @@ const NewTweet = ({ profile, addTweet }) => {
                                     {selectedReplyOption.content?.toLowerCase() === 'everyone' && (
                                         <GlobeAltIcon className='h-8' />
                                     )}
-                                    {selectedReplyOption.content?.toLowerCase() === 'people you follow' && (
+                                    {selectedReplyOption.content?.toLowerCase() === 'followers' && (
                                         <UsersIcon className='h-8' />
                                     )}
                                     <span className='hidden md:flex'>{selectedReplyOption.content} can reply</span>
@@ -123,7 +123,7 @@ const NewTweet = ({ profile, addTweet }) => {
                                                             {replyOption.content.toLowerCase() === 'everyone' && (
                                                                 <GlobeAltIcon className='h-8' />
                                                             )}
-                                                            {replyOption.content.toLowerCase() === 'people you follow' && (
+                                                            {replyOption.content.toLowerCase() === 'followers' && (
                                                                 <UsersIcon className='h-8' />
                                                             )}
                                                             <span>{replyOption.content}</span>

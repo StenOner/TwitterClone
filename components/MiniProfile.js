@@ -45,7 +45,7 @@ const MiniProfile = ({ myProfile, profile, deleteProfileOnFollow }) => {
                     <Link href={`/profile/${profile._id}`} className='font-semibold'>
                         {profile.fullName}
                     </Link>
-                    <span>{profileFollowers.length} follower{profileFollowers.length !== 1 ? 's' : ''}</span>
+                    <span>{profileFollowers.length} follower{profileFollowers.length !== 1 && 's'}</span>
                 </div>
                 {!isBeingFollowed && <button className='flex space-x-1 items-center px-2 py-1 bg-blue-400 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 transition-all duration-200' onClick={followProfile.bind(null, profile._id)}>
                     <UserPlusIcon className='h-5' />
@@ -53,7 +53,7 @@ const MiniProfile = ({ myProfile, profile, deleteProfileOnFollow }) => {
                 </button>}
             </div>
             <div className='flex'>
-                {profile.bio}
+                <span>{profile.bio.length > 70 ? `${profile.bio.substring(0, 70)}...` : profile.bio}</span>
             </div>
             <div className='flex'>
                 <Suspense fallback={<Loading />}>
