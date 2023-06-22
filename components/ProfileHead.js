@@ -138,7 +138,7 @@ const ProfileHead = ({ myProfile, profile, setProfile, setFollowingModalIsOpen, 
                         <div className='absolute w-12 h-12 p-2 top-2 left-2 rounded-full text-white opacity-80 cursor-pointer hover:bg-white transition-colors duration-200 hover:text-blue-400' onClick={() => bannerFileRef.current.click()}>
                             <PencilIcon className='w-full' />
                         </div>
-                        <input ref={bannerFileRef} type='file' multiple={false} accept={'.png,.jpg,.jpeg,.gif'} hidden onChange={updateProfileBannerHandler} />
+                        <input ref={bannerFileRef} type='file' multiple={false} accept={'.png,.jpg,.jpeg,.gif,.webp'} hidden onChange={updateProfileBannerHandler} />
                     </>
                 ))}
             </div>
@@ -161,7 +161,7 @@ const ProfileHead = ({ myProfile, profile, setProfile, setFollowingModalIsOpen, 
                         <div className='absolute w-10 h-10 p-2 top-2 left-2 rounded-full text-white opacity-80 cursor-pointer hover:bg-white transition-colors duration-200 hover:text-blue-400' onClick={() => pictureFileRef.current.click()}>
                             <PencilIcon className='w-full' />
                         </div>
-                        <input ref={pictureFileRef} type='file' multiple={false} accept={'.png,.jpg,.jpeg,.gif'} hidden onChange={updateProfilePictureHandler} />
+                        <input ref={pictureFileRef} type='file' multiple={false} accept={'.png,.jpg,.jpeg,.gif,.webp'} hidden onChange={updateProfilePictureHandler} />
                     </>
                 ))}
             </div>
