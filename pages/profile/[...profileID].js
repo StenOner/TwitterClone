@@ -117,7 +117,7 @@ const Profile = ({ myProfile }) => {
                     <ProfileHead myProfile={myProfile} profile={profile} setProfile={setProfile} setFollowingModalIsOpen={setFollowingModalIsOpen} setFollowersModalIsOpen={setFollowersModalIsOpen} profileFollowers={profileFollowers} profileFollowing={profileFollowing} followProfile={followProfileHandler} unfollowProfile={unfollowProfileHandler} />
                 </Suspense>
                 <Suspense fallback={<Loading />}>
-                    <ProfileBody myProfile={myProfile} profile={profile} />
+                    <ProfileBody myProfile={myProfile} />
                 </Suspense>
             </div>
         </>
