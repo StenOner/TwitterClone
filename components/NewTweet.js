@@ -140,7 +140,7 @@ const NewTweet = ({ profile, addTweet }) => {
                             <GlobeAltIcon className='h-8' />
                             <span>Everyone can reply</span>
                         </span>
-                        <button className='flex space-x-1 items-center ml-auto py-1 px-1 sm:px-2 md:px-6 bg-blue-400 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 transition-all duration-200' onClick={publishTweet}>
+                        <button className='flex space-x-1 items-center ml-auto py-1 px-1 sm:px-2 md:px-6 bg-blue-400 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 transition-all duration-200 disabled:bg-blue-200 disabled:cursor-not-allowed' disabled={isLoading} onClick={publishTweet}>
                             Tweet
                         </button>
                     </div>

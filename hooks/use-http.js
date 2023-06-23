@@ -30,8 +30,9 @@ const useHttp = () => {
             return response
         } catch (error) {
             setError(error.response?.data.message || error.message || 'Something went wrong!')
+        } finally {
+            setIsLoading(false)
         }
-        setIsLoading(false)
     }, [])
 
     return {

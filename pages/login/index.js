@@ -8,7 +8,7 @@ const LogIn = () => {
     const emailRef = useRef()
     const passwordRef = useRef()
     const router = useRouter()
-    const { isLoading, error, sendRequest } = useHttp()
+    const { error, isLoading, sendRequest } = useHttp()
 
     useEffect(() => {
         emailRef.current.value = localStorage.getItem(process.env.NEXT_PUBLIC_LOGIN_EMAIL) || ''
@@ -46,7 +46,7 @@ const LogIn = () => {
                 <input ref={passwordRef} type='password' className='form__field' placeholder='Password' autoComplete='off' required />
             </div>
             <div className='form__group self-center pt-2'>
-                <input type='submit' className='w-full px-2 py-2 bg-blue-400 text-white text-xl font-semibold rounded-full hover:cursor-pointer hover:bg-blue-500 transition-all duration-200' value='Log in' />
+                <input type='submit' className='w-full px-2 py-2 bg-blue-400 text-white text-xl font-semibold rounded-full hover:cursor-pointer hover:bg-blue-500 transition-all duration-200 disabled:bg-blue-200 disabled:cursor-not-allowed' disabled={isLoading} value='Log in' />
             </div>
             <div className='form__group self-center pt-2'>
                 <span>

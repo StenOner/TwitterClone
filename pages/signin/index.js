@@ -58,7 +58,7 @@ const SignIn = () => {
                 <input ref={userNameRef} type='text' className='form__field' placeholder='User Name' autoComplete='off' required />
             </div>
             <div className='form__group self-center pt-2'>
-                <input type='submit' className='w-full px-2 py-2 bg-blue-400 text-white text-xl font-semibold rounded-full hover:cursor-pointer hover:bg-blue-500 transition-all duration-200' value='Sign in' />
+                <input type='submit' className='w-full px-2 py-2 bg-blue-400 text-white text-xl font-semibold rounded-full hover:cursor-pointer hover:bg-blue-500 transition-all duration-200 disabled:bg-blue-200 disabled:cursor-not-allowed' disabled={isLoadingHttp || isLoadingHttpToken} value='Sign in' />
             </div>
             <div className='form__group self-center pt-2'>
                 <span>

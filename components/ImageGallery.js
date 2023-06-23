@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import ImageMediaContent from './ImageMediaContent'
+import ImageMediaContent from '@/components/ImageMediaContent'
 
 const ImageGallery = ({ images }) => {
     return (

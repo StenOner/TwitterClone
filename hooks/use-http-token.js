@@ -33,8 +33,9 @@ const useHttpToken = () => {
             return response
         } catch (er) {
             setError(er.response?.data.message || er.message || 'Something went wrong!')
+        } finally {
+            setIsLoading(false)
         }
-        setIsLoading(false)
     }, [])
 
     return {
