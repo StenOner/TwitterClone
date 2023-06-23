@@ -64,7 +64,7 @@ const TWEET_INFO_BASE = {
     retweets: [],
 }
 
-const Tweet = ({ profile, tweet }) => {
+const Tweet = ({ myProfile, profile, tweet }) => {
     const [newComment, setNewComment] = useState(null)
     const [tweetInfoState, tweetInfoDispatch] = useReducer(reducer, TWEET_INFO_BASE)
     const [canReply, setCanReply] = useState(false)
@@ -75,9 +75,10 @@ const Tweet = ({ profile, tweet }) => {
     }, [tweet, tweetInfoDispatch])
 
     useEffect(() => {
-        if (!profile?._id) return
-        if (tweet.tweetReplyOptionID.content?.toLowerCase() === 'everyone' || tweet.profileID._id === profile._id) return setCanReply(true)
-        if (tweet.profileID.followers.some(follower => follower.followerProfileID._id === profile._id)) return setCanReply(true)
+        if (!myProfile?._id && !profile?._id) return
+        const currentProfile = myProfile ?? profile
+        if (tweet.tweetReplyOptionID.content?.toLowerCase() === 'everyone' || tweet.profileID._id === currentProfile._id) return setCanReply(true)
+        if (tweet.profileID.followers.some(follower => follower.followerProfileID._id === currentProfile._id)) return setCanReply(true)
     }, [tweet, profile, setCanReply, sendRequest])
 
     const addCommentHandler = useCallback((comment) => {

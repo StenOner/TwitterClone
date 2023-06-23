@@ -4,7 +4,7 @@ import EmptyFallback from '@/components/EmptyFallback'
 import Loading from '@/components/Loading'
 import TweetFilter from '@/components/TweetFilter'
 import useHttpToken from '@/hooks/use-http-token'
-const Tweet = lazy(() => import('./Tweet'))
+const Tweet = lazy(() => import('@/components/Tweet'))
 
 const FILTER_MODES = {
     tweets: 'tweets',
@@ -13,7 +13,7 @@ const FILTER_MODES = {
     likes: 'likes',
 }
 
-const Tweets = ({ profile, newTweet, isFilterMode }) => {
+const Tweets = ({ myProfile, profile, newTweet, isFilterMode }) => {
     const [tweets, setTweets] = useState([])
     const [filteredTweets, setFilteredTweets] = useState([])
     const { error, isLoading, sendRequest } = useHttpToken()
@@ -62,7 +62,7 @@ const Tweets = ({ profile, newTweet, isFilterMode }) => {
                 )}
                 {filteredTweets.map(tweet => (
                     <Suspense key={uuidv4()} fallback={<Loading />}>
-                        <Tweet profile={profile} tweet={tweet} />
+                        <Tweet myProfile={myProfile} profile={profile} tweet={tweet} />
                     </Suspense>
                 ))}
             </div>

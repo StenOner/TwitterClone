@@ -19,12 +19,11 @@ const ExploreTweets = ({ profile }) => {
     const { error, isLoading, sendRequest } = useHttpToken()
 
     useEffect(() => {
-        if (!profile?._id) return
         sendRequest({ url: `tweets` }, ({ data }) => {
             setTweets(data.tweetsInfo)
             setFilteredTweets(data.tweetsInfo)
         })
-    }, [profile, sendRequest])
+    }, [sendRequest, setTweets, setFilteredTweets])
 
     const searchTweetsHandler = (searchTerm) => {
         const filtered = tweets.filter((tweet) => Object.keys(tweet).some((key) => {
