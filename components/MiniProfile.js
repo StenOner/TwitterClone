@@ -47,10 +47,12 @@ const MiniProfile = ({ myProfile, profile, deleteProfileOnFollow }) => {
                     </Link>
                     <span>{profileFollowers.length} follower{profileFollowers.length !== 1 && 's'}</span>
                 </div>
-                {!isBeingFollowed && <button className='flex space-x-1 items-center px-2 py-1 bg-blue-400 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 transition-all duration-200 disabled:bg-blue-200 disabled:cursor-not-allowed' disabled={isLoading} onClick={followProfile.bind(null, profile._id)}>
-                    <UserPlusIcon className='h-5' />
-                    <span className='hidden lg:flex'>Follow</span>
-                </button>}
+                {!isBeingFollowed && (
+                    <button className='flex space-x-1 items-center px-2 py-1 bg-blue-400 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 transition-all duration-200 disabled:bg-blue-200 disabled:cursor-not-allowed' disabled={isLoading} onClick={followProfile.bind(null, profile._id)}>
+                        <UserPlusIcon className='h-5' />
+                        <span className='hidden lg:flex'>Follow</span>
+                    </button>
+                )}
             </div>
             <div className='flex'>
                 <span>{profile.bio.length > 70 ? `${profile.bio.substring(0, 70)}...` : profile.bio}</span>

@@ -86,13 +86,14 @@ const Header = ({ myProfile }) => {
                     <Link href='/signin' className='w-full px-2 py-2 bg-blue-400 text-white text-xl font-semibold rounded-full hover:cursor-pointer hover:bg-blue-500 transition-all duration-200'>
                         Make an account!
                     </Link>
-                </div>)}
+                </div>
+            )}
             {isLoggedIn && (
                 <Menu as='div' className='flex'>
                     <Menu.Button className='flex items-center space-x-1 cursor-pointer group'>
                         <picture className='flex items-center mr-1'>
-                            <source media='(max-width: 767px)' srcSet={myProfile.picture ? `${IMAGE_BASE_URL}${myProfile.picture}` : '/images/default_profile_normal.png'} width={26} />
-                            <source media='(min-width: 768px)' srcSet={myProfile.picture ? `${IMAGE_BASE_URL}${myProfile.picture}` : '/images/default_profile_normal.png'} width={44} />
+                            <source media='(max-width: 767px)' srcSet={myProfile.picture ? `${!/(^\/)|(^blob:)|(^https*:\/\/)/g.test(myProfile.picture) ? IMAGE_BASE_URL : ''}${myProfile.picture}` : '/images/default_profile_normal.png'} width={26} />
+                            <source media='(min-width: 768px)' srcSet={myProfile.picture ? `${!/(^\/)|(^blob:)|(^https*:\/\/)/g.test(myProfile.picture) ? IMAGE_BASE_URL : ''}${myProfile.picture}` : '/images/default_profile_normal.png'} width={44} />
                             <Suspense fallback={<Loading />}>
                                 <ImageMediaContent
                                     src={myProfile.picture ?? '/images/default_profile_normal.png'}
@@ -160,7 +161,8 @@ const Header = ({ myProfile }) => {
                             </div>
                         </Menu.Items>
                     </Transition>
-                </Menu>)}
+                </Menu>
+            )}
         </nav>
     )
 }
