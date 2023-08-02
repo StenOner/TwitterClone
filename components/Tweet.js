@@ -134,21 +134,21 @@ const Tweet = ({ myProfile, profile, tweet }) => {
             <div className='flex flex-col space-y-2'>
                 <hr />
                 <div className='flex justify-evenly'>
-                    <CommentButton profile={profile} tweet={tweet} comments={tweetInfoState.comments} />
-                    <RetweetButton profile={profile} tweet={tweet} retweets={tweetInfoState.retweets}
+                    <CommentButton profile={myProfile ?? profile} tweet={tweet} comments={tweetInfoState.comments} />
+                    <RetweetButton profile={myProfile ?? profile} tweet={tweet} retweets={tweetInfoState.retweets}
                         addRetweet={(retweet) => tweetInfoDispatch({ type: 'add_retweet', payload: retweet })}
                         deleteRetweet={(retweetID) => tweetInfoDispatch({ type: 'delete_retweet', payload: retweetID })} />
-                    <LikeButton profile={profile} tweet={tweet} likes={tweetInfoState.likes}
+                    <LikeButton profile={myProfile ?? profile} tweet={tweet} likes={tweetInfoState.likes}
                         addLike={(like) => tweetInfoDispatch({ type: 'add_like', payload: like })}
                         deleteLike={(likeID) => tweetInfoDispatch({ type: 'delete_like', payload: likeID })} />
-                    <BookmarkButton profile={profile} tweet={tweet} bookmarks={tweetInfoState.bookmarks}
+                    <BookmarkButton profile={myProfile ?? profile} tweet={tweet} bookmarks={tweetInfoState.bookmarks}
                         addBookmark={(bookmark) => tweetInfoDispatch({ type: 'add_bookmark', payload: bookmark })}
                         deleteBookmark={(bookmarkID) => tweetInfoDispatch({ type: 'delete_bookmark', payload: bookmarkID })} />
                 </div>
                 <hr />
                 <div className='flex w-full'>
                     {(canReply && (
-                        <NewComment profile={profile} tweet={tweet} addComment={addCommentHandler} />
+                        <NewComment profile={myProfile ?? profile} tweet={tweet} addComment={addCommentHandler} />
                     )) || (!canReply && (
                         <span className='flex text-gray-400'>
                             Only followers can reply to this tweet.

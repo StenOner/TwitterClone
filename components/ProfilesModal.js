@@ -1,10 +1,8 @@
 import { Modal } from '@mui/material'
 import { UserPlusIcon, XMarkIcon } from '@heroicons/react/24/solid'
 import { v4 as uuidv4 } from 'uuid'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Link from 'next/link'
-
-const IMAGE_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}download/`
+import ImageMediaContent from '@/components/ImageMediaContent'
 
 const ProfilesModal = ({ title, isOpen, closeModal, myProfile, profiles, myProfileFollowing, followProfile }) => {
     return (
@@ -27,8 +25,8 @@ const ProfilesModal = ({ title, isOpen, closeModal, myProfile, profiles, myProfi
                         <div key={uuidv4()} className='flex mt-2 flex-col'>
                             <div className='flex'>
                                 <div className='self-start max-w-[3rem]'>
-                                    <LazyLoadImage
-                                        src={profileInfo.picture ? `${IMAGE_BASE_URL}${profileInfo.picture}` : '/images/default_profile_normal.png'}
+                                    <ImageMediaContent
+                                        src={profileInfo.picture ?? '/images/default_profile_normal.png'}
                                         className='rounded-lg max-h-full' />
                                 </div>
                                 <div className='flex flex-col ml-4 justify-between'>
@@ -36,7 +34,7 @@ const ProfilesModal = ({ title, isOpen, closeModal, myProfile, profiles, myProfi
                                         {profileInfo.fullName}
                                     </Link>
                                     <span className='text-xs'>
-                                        {-1} followers
+                                        {profileInfo.followers.length} followers
                                     </span>
                                 </div>
                                 {myProfile._id !== profileInfo._id && (<div className='ml-auto'>
